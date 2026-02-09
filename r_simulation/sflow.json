@@ -3,7 +3,7 @@
         {
             "id": "generate",
             "name": "Generate simulation tasks",
-            "command": "module load python/booth/3.12 && python generate_tasks.py --count 5 --output .scripthut/r_simulation/generated-tasks.json --partition standard",
+            "command": "module load python/booth/3.12 && python3 generate_tasks.py --count 5 --output .scripthut/r_simulation/generated-tasks.json --partition standard",
             "partition": "standard",
             "cpus": 1,
             "memory": "1G",
