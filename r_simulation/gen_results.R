@@ -1,4 +1,4 @@
-# Generate a single simulation draw from a bivariate normal distribution.
+# Run a single OLS regression on a high-dimensional design matrix.
 #
 # Usage: Rscript --vanilla gen_results.R <seed> <output_dir>
 #
@@ -24,20 +24,26 @@ cat(sprintf("Simulation %d started\n", seed))
 cat(sprintf("  Hostname: %s\n", Sys.info()["nodename"]))
 cat(sprintf("  Time: %s\n", Sys.time()))
 
-# Simulate: draw from bivariate normal
-n_draws <- 100
-x <- rnorm(n_draws, mean = -1, sd = 1)
-y <- rnorm(n_draws, mean = 1, sd = 2)
+# DGP: Y = X %*% beta + epsilon
+n <- 1000000
+K <- 10000
+beta_true <- seq(-1, 1, length.out = K)
+
+X <- matrix(rnorm(n * K), nrow = n)
+epsilon <- rnorm(n)
+y <- X %*% beta_true + epsilon
+
+# Fit OLS
+fit <- lm.fit(X, y)
+beta_hat <- fit$coefficients
 
 # Compute summary statistics
 result <- data.frame(
     seed = seed,
-    mean_x = mean(x),
-    mean_y = mean(y),
-    sd_x = sd(x),
-    sd_y = sd(y),
-    cor_xy = cor(x, y),
-    n = n_draws
+    estimation_error = sqrt(sum((beta_hat - beta_true)^2)),
+    r_squared = 1 - sum(fit$residuals^2) / sum((y - mean(y))^2),
+    n = n,
+    K = K
 )
 
 # Save result

@@ -8,7 +8,7 @@ Each subdirectory contains a self-contained workflow with a `sflow.json` entry p
 
 | Example | Description |
 |---|---|
-| [r_simulation](r_simulation/) | Fan-out/fan-in R simulation pipeline using endogenous workflows |
+| [r_simulation](r_simulation/) | Monte Carlo regression simulation comparing OLS, Ridge, and Lasso |
 
 ## Usage
 

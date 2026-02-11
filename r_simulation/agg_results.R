@@ -25,12 +25,13 @@ if (length(files) == 0) {
 all_results <- do.call(rbind, lapply(files, read.csv))
 
 # Compute aggregate statistics
+n_reps <- nrow(all_results)
 summary_result <- data.frame(
-    n_simulations = nrow(all_results),
-    grand_mean_x = mean(all_results$mean_x),
-    grand_mean_y = mean(all_results$mean_y),
-    se_mean_x = sd(all_results$mean_x) / sqrt(nrow(all_results)),
-    se_mean_y = sd(all_results$mean_y) / sqrt(nrow(all_results))
+    n_simulations = n_reps,
+    mean_estimation_error = mean(all_results$estimation_error),
+    se_estimation_error = sd(all_results$estimation_error) / sqrt(n_reps),
+    mean_r_squared = mean(all_results$r_squared),
+    se_r_squared = sd(all_results$r_squared) / sqrt(n_reps)
 )
 
 # Save aggregated results
