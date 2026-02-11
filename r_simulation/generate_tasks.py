@@ -36,9 +36,10 @@ def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
         tasks.append({
             "id": f"sim-{i}",
             "name": f"Simulation {i}",
-            "command": f"module load R/4.5/4.5.1 && Rscript --vanilla gen_results.R {i} temp",
+            "command": f"Rscript --vanilla gen_results.R {i} temp",
             "working_dir": working_dir,
             "partition": partition,
+            "environment": "r-451",
             "cpus": 1,
             "memory": "1G",
             "time_limit": "00:05:00",
@@ -48,9 +49,10 @@ def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
     tasks.append({
         "id": "aggregate",
         "name": "Aggregate Results",
-        "command": "module load R/4.5/4.5.1 && Rscript --vanilla agg_results.R temp",
+        "command": "Rscript --vanilla agg_results.R temp",
         "working_dir": working_dir,
         "partition": partition,
+        "environment": "r-451",
         "cpus": 1,
         "memory": "1G",
         "time_limit": "00:05:00",
