@@ -3,7 +3,7 @@
         {
             "id": "generate",
             "name": "Generate simulation tasks",
-            "command": "python3 generate_tasks.py --count 10 --output .scripthut/r_simulation/generated-tasks.json --partition standard",
+            "command": "python3 generate_tasks.py --count 5 --output .scripthut/r_simulation/generated-tasks.json --partition standard",
             "environment": "python-booth",
             "partition": "standard",
             "cpus": 1,

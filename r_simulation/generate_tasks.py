@@ -41,7 +41,7 @@ def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
             "partition": partition,
             "environment": "r-451",
             "cpus": 1,
-            "memory": "1G",
+            "memory": "2G",
             "time_limit": "00:05:00",
         })
 

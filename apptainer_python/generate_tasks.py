@@ -56,7 +56,10 @@ def generate_tasks(count: int, working_dir: str, partition: str, sif_path: str) 
         tasks.append({
             "id": f"sim.{i}",
             "name": f"Simulation {i}",
-            "command": f"apptainer exec {sif_path} python3 simulate.py {i} temp",
+            "command": (
+                f"env -u PYTHONHOME -u PYTHONPATH "
+                f"apptainer exec {sif_path} python3 simulate.py {i} temp"
+            ),
             "working_dir": working_dir,
             "partition": partition,
             "cpus": 1,

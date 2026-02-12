@@ -33,7 +33,6 @@ projects:
   - name: scripthut-examples
     backend: mercury
     path: ~/Projects/scripthut-examples
-    max_concurrent: 3
     description: "Example ScriptHut workflows"
 ```
 

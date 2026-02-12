@@ -22,7 +22,6 @@ workflows:
   - name: apptainer-sim
     backend: mercury
     command: "cat ~/Projects/scripthut-examples/apptainer_python/sflow.json"
-    max_concurrent: 3
 ```
 
 2. Make sure the `python-booth` environment is configured (for the generator and aggregator):

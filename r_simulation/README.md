@@ -40,7 +40,6 @@ projects:
   - name: scripthut-examples
     backend: mercury
     path: ~/Projects/scripthut-examples
-    max_concurrent: 3
 ```
 
 ### 3. Make sure the `r-451` environment is configured

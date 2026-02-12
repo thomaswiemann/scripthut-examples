@@ -19,7 +19,6 @@ workflows:
   - name: python-pricing
     backend: mercury
     command: "cat ~/Projects/scripthut-examples/python_simulation/sflow.json"
-    max_concurrent: 3
 ```
 
 2. Make sure the `python-booth` environment is configured:

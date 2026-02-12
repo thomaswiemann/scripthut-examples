@@ -21,7 +21,6 @@ workflows:
   - name: julia-bootstrap
     backend: mercury
     command: "cat ~/Projects/scripthut-examples/julia_simulation/sflow.json"
-    max_concurrent: 3
 ```
 
 2. Make sure the environments are configured:

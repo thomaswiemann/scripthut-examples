@@ -25,8 +25,8 @@ cat(sprintf("  Hostname: %s\n", Sys.info()["nodename"]))
 cat(sprintf("  Time: %s\n", Sys.time()))
 
 # DGP: Y = X %*% beta + epsilon
-n <- 1000000
-K <- 10000
+n <- 500000
+K <- 50
 beta_true <- seq(-1, 1, length.out = K)
 
 X <- matrix(rnorm(n * K), nrow = n)

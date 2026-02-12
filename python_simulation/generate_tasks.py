@@ -58,7 +58,7 @@ def main():
         description="Generate Monte Carlo pricing tasks for ScriptHut"
     )
     parser.add_argument(
-        "--count", "-n", type=int, default=10,
+        "--count", "-n", type=int, default=5,
         help="Number of pricing tasks (default: 10)",
     )
     parser.add_argument(
