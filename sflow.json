@@ -3,7 +3,7 @@
         {
             "id": "r.generate",
             "name": "R — Generate simulation tasks",
-            "command": "python3 r_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/r-tasks.json --partition standard",
+            "command": "python3 r_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/r-tasks.json --partition standard --prefix r.",
             "environment": "python-booth",
             "partition": "standard",
             "cpus": 1,
@@ -14,7 +14,7 @@
         {
             "id": "python.generate",
             "name": "Python — Generate pricing tasks",
-            "command": "python3 python_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/python-tasks.json --partition standard",
+            "command": "python3 python_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/python-tasks.json --partition standard --prefix py.",
             "environment": "python-booth",
             "partition": "standard",
             "cpus": 1,
@@ -25,7 +25,7 @@
         {
             "id": "julia.generate",
             "name": "Julia — Generate bootstrap tasks",
-            "command": "python3 julia_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/julia-tasks.json --partition standard",
+            "command": "python3 julia_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/julia-tasks.json --partition standard --prefix jl.",
             "environment": "python-booth",
             "partition": "standard",
             "cpus": 1,
@@ -36,7 +36,7 @@
         {
             "id": "apptainer.generate",
             "name": "Apptainer — Build container and generate tasks",
-            "command": "python3 apptainer_python/generate_tasks.py --count 5 --output .scripthut/all_examples/apptainer-tasks.json --partition standard",
+            "command": "python3 apptainer_python/generate_tasks.py --count 5 --output .scripthut/all_examples/apptainer-tasks.json --partition standard --prefix apt.",
             "environment": "python-booth",
             "partition": "standard",
             "cpus": 1,

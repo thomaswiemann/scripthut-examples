@@ -27,14 +27,14 @@ import json
 import os
 
 
-def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
+def generate_tasks(count: int, working_dir: str, partition: str, prefix: str = "") -> dict:
     """Generate simulation tasks with a fan-out/fan-in pattern."""
     tasks = []
 
     # Fan-out: N parallel simulation tasks
     for i in range(count):
         tasks.append({
-            "id": f"sim.{i}",
+            "id": f"{prefix}sim.{i}",
             "name": f"Simulation {i}",
             "command": f"Rscript --vanilla gen_results.R {i} temp",
             "working_dir": working_dir,
@@ -47,7 +47,7 @@ def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
 
     # Fan-in: aggregate all simulation results
     tasks.append({
-        "id": "aggregate",
+        "id": f"{prefix}aggregate",
         "name": "Aggregate Results",
         "command": "Rscript --vanilla agg_results.R temp",
         "working_dir": working_dir,
@@ -56,7 +56,7 @@ def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
         "cpus": 1,
         "memory": "1G",
         "time_limit": "00:05:00",
-        "deps": ["sim.*"],  # Wildcard: waits for ALL sim.* tasks
+        "deps": [f"{prefix}sim.*"],
     })
 
     return {"tasks": tasks}
@@ -83,9 +83,13 @@ def main():
         "--output", "-o", type=str, default=None,
         help="Write JSON to file instead of stdout (for generates_source)",
     )
+    parser.add_argument(
+        "--prefix", type=str, default="",
+        help="Prefix for task IDs (e.g. 'r.' to avoid collisions in combined runs)",
+    )
 
     args = parser.parse_args()
-    tasks = generate_tasks(args.count, args.working_dir, args.partition)
+    tasks = generate_tasks(args.count, args.working_dir, args.partition, args.prefix)
 
     if args.output:
         os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)

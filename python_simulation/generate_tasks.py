@@ -18,14 +18,14 @@ import json
 import os
 
 
-def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
+def generate_tasks(count: int, working_dir: str, partition: str, prefix: str = "") -> dict:
     """Generate Monte Carlo pricing tasks with a fan-out/fan-in pattern."""
     tasks = []
 
     # Fan-out: N parallel pricing simulations
     for i in range(count):
         tasks.append({
-            "id": f"pricing.{i}",
+            "id": f"{prefix}pricing.{i}",
             "name": f"Pricing {i}",
             "command": f"python3 price_option.py {i} temp",
             "working_dir": working_dir,
@@ -38,7 +38,7 @@ def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
 
     # Fan-in: aggregate all pricing estimates
     tasks.append({
-        "id": "aggregate",
+        "id": f"{prefix}aggregate",
         "name": "Aggregate Results",
         "command": "python3 aggregate.py temp",
         "working_dir": working_dir,
@@ -47,7 +47,7 @@ def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
         "cpus": 1,
         "memory": "1G",
         "time_limit": "00:05:00",
-        "deps": ["pricing.*"],  # Wildcard: waits for ALL pricing.* tasks
+        "deps": [f"{prefix}pricing.*"],
     })
 
     return {"tasks": tasks}
@@ -74,9 +74,13 @@ def main():
         "--output", "-o", type=str, default=None,
         help="Write JSON to file instead of stdout (for generates_source)",
     )
+    parser.add_argument(
+        "--prefix", type=str, default="",
+        help="Prefix for task IDs (e.g. 'python.' to avoid collisions in combined runs)",
+    )
 
     args = parser.parse_args()
-    tasks = generate_tasks(args.count, args.working_dir, args.partition)
+    tasks = generate_tasks(args.count, args.working_dir, args.partition, args.prefix)
 
     if args.output:
         os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)

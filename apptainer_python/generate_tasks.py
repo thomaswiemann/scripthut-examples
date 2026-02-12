@@ -47,14 +47,14 @@ def ensure_container(sif_path: str) -> None:
     print(f"Container ready ({os.path.getsize(sif_path) / 1e6:.1f} MB)")
 
 
-def generate_tasks(count: int, working_dir: str, partition: str, sif_path: str) -> dict:
+def generate_tasks(count: int, working_dir: str, partition: str, sif_path: str, prefix: str = "") -> dict:
     """Generate containerized simulation tasks."""
     tasks = []
 
     # Fan-out: N parallel simulations inside the container
     for i in range(count):
         tasks.append({
-            "id": f"sim.{i}",
+            "id": f"{prefix}sim.{i}",
             "name": f"Simulation {i}",
             "command": (
                 f"env -u PYTHONHOME -u PYTHONPATH "
@@ -69,7 +69,7 @@ def generate_tasks(count: int, working_dir: str, partition: str, sif_path: str) 
 
     # Fan-in: aggregate results (no container needed — just reads CSVs)
     tasks.append({
-        "id": "aggregate",
+        "id": f"{prefix}aggregate",
         "name": "Aggregate Results",
         "command": "python3 aggregate.py temp",
         "working_dir": working_dir,
@@ -78,7 +78,7 @@ def generate_tasks(count: int, working_dir: str, partition: str, sif_path: str) 
         "cpus": 1,
         "memory": "1G",
         "time_limit": "00:05:00",
-        "deps": ["sim.*"],  # Wildcard: waits for ALL sim.* tasks
+        "deps": [f"{prefix}sim.*"],
     })
 
     return {"tasks": tasks}
@@ -105,6 +105,10 @@ def main():
         "--output", "-o", type=str, default=None,
         help="Write JSON to file instead of stdout (for generates_source)",
     )
+    parser.add_argument(
+        "--prefix", type=str, default="",
+        help="Prefix for task IDs (e.g. 'apptainer.' to avoid collisions in combined runs)",
+    )
 
     args = parser.parse_args()
 
@@ -112,7 +116,7 @@ def main():
     sif_path = os.path.join(SIF_CACHE_DIR, SIF_NAME)
     ensure_container(sif_path)
 
-    tasks = generate_tasks(args.count, args.working_dir, args.partition, sif_path)
+    tasks = generate_tasks(args.count, args.working_dir, args.partition, sif_path, args.prefix)
 
     if args.output:
         os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)
