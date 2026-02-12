@@ -1,0 +1,48 @@
+{
+    "tasks": [
+        {
+            "id": "r.generate",
+            "name": "R — Generate simulation tasks",
+            "command": "python3 r_simulation/generate_tasks.py --count 10 --output .scripthut/all_examples/r-tasks.json --partition standard",
+            "environment": "python-booth",
+            "partition": "standard",
+            "cpus": 1,
+            "memory": "1G",
+            "time_limit": "00:05:00",
+            "generates_source": ".scripthut/all_examples/r-tasks.json"
+        },
+        {
+            "id": "python.generate",
+            "name": "Python — Generate pricing tasks",
+            "command": "python3 python_simulation/generate_tasks.py --count 10 --output .scripthut/all_examples/python-tasks.json --partition standard",
+            "environment": "python-booth",
+            "partition": "standard",
+            "cpus": 1,
+            "memory": "1G",
+            "time_limit": "00:05:00",
+            "generates_source": ".scripthut/all_examples/python-tasks.json"
+        },
+        {
+            "id": "julia.generate",
+            "name": "Julia — Generate bootstrap tasks",
+            "command": "python3 julia_simulation/generate_tasks.py --count 10 --output .scripthut/all_examples/julia-tasks.json --partition standard",
+            "environment": "python-booth",
+            "partition": "standard",
+            "cpus": 1,
+            "memory": "1G",
+            "time_limit": "00:05:00",
+            "generates_source": ".scripthut/all_examples/julia-tasks.json"
+        },
+        {
+            "id": "apptainer.generate",
+            "name": "Apptainer — Build container and generate tasks",
+            "command": "python3 apptainer_python/generate_tasks.py --count 5 --output .scripthut/all_examples/apptainer-tasks.json --partition standard",
+            "environment": "python-booth",
+            "partition": "standard",
+            "cpus": 1,
+            "memory": "2G",
+            "time_limit": "00:10:00",
+            "generates_source": ".scripthut/all_examples/apptainer-tasks.json"
+        }
+    ]
+}

@@ -1,25 +1,16 @@
 #!/usr/bin/env python3
 """
-Task generator for R simulation pipeline.
+Task generator for Python Monte Carlo option pricing pipeline.
 
-Generates N parallel simulation tasks followed by one aggregation task.
-The aggregation task uses wildcard dependencies ("sim-*") to wait for
-all simulations to complete before running.
+Generates N parallel pricing tasks followed by one aggregation task.
+Each pricing task estimates the price of a European call option using
+Monte Carlo simulation of geometric Brownian motion.
 
 This script runs on a compute node (via generates_source), NOT on the
 head node. It writes the task JSON to a file that ScriptHut reads back.
 
 Usage:
     python generate_tasks.py [--count N] [--working-dir DIR] [--output FILE]
-
-Example sflow.json entry point:
-    {
-      "tasks": [{
-        "id": "generate",
-        "command": "python generate_tasks.py --count 5 --output ~/.cache/scripthut/sources/r-sim.json",
-        "generates_source": "~/.cache/scripthut/sources/r-sim.json"
-      }]
-    }
 """
 
 import argparse
@@ -28,35 +19,35 @@ import os
 
 
 def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
-    """Generate simulation tasks with a fan-out/fan-in pattern."""
+    """Generate Monte Carlo pricing tasks with a fan-out/fan-in pattern."""
     tasks = []
 
-    # Fan-out: N parallel simulation tasks
+    # Fan-out: N parallel pricing simulations
     for i in range(count):
         tasks.append({
-            "id": f"sim.{i}",
-            "name": f"Simulation {i}",
-            "command": f"Rscript --vanilla gen_results.R {i} temp",
+            "id": f"pricing.{i}",
+            "name": f"Pricing {i}",
+            "command": f"python3 price_option.py {i} temp",
             "working_dir": working_dir,
             "partition": partition,
-            "environment": "r-451",
+            "environment": "python-booth",
             "cpus": 1,
             "memory": "1G",
             "time_limit": "00:05:00",
         })
 
-    # Fan-in: aggregate all simulation results
+    # Fan-in: aggregate all pricing estimates
     tasks.append({
         "id": "aggregate",
         "name": "Aggregate Results",
-        "command": "Rscript --vanilla agg_results.R temp",
+        "command": "python3 aggregate.py temp",
         "working_dir": working_dir,
         "partition": partition,
-        "environment": "r-451",
+        "environment": "python-booth",
         "cpus": 1,
         "memory": "1G",
         "time_limit": "00:05:00",
-        "deps": ["sim.*"],  # Wildcard: waits for ALL sim.* tasks
+        "deps": ["pricing.*"],  # Wildcard: waits for ALL pricing.* tasks
     })
 
     return {"tasks": tasks}
@@ -64,11 +55,11 @@ def generate_tasks(count: int, working_dir: str, partition: str) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate R simulation tasks for ScriptHut"
+        description="Generate Monte Carlo pricing tasks for ScriptHut"
     )
     parser.add_argument(
-        "--count", "-n", type=int, default=5,
-        help="Number of simulation tasks (default: 5)",
+        "--count", "-n", type=int, default=10,
+        help="Number of pricing tasks (default: 10)",
     )
     parser.add_argument(
         "--working-dir", "-d", type=str,
@@ -98,4 +89,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

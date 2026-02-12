@@ -1,2 +1,9 @@
 # ScriptHut runtime artifacts
 .scripthut/
+
+# Discussion files (internal planning)
+.discussions/
+
+# Example runtime artifacts
+temp/
+results.csv

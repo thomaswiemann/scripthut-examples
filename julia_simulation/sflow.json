@@ -1,0 +1,15 @@
+{
+    "tasks": [
+        {
+            "id": "generate",
+            "name": "Generate bootstrap tasks",
+            "command": "python3 generate_tasks.py --count 10 --output .scripthut/julia_simulation/generated-tasks.json --partition standard",
+            "environment": "python-booth",
+            "partition": "standard",
+            "cpus": 1,
+            "memory": "1G",
+            "time_limit": "00:05:00",
+            "generates_source": ".scripthut/julia_simulation/generated-tasks.json"
+        }
+    ]
+}

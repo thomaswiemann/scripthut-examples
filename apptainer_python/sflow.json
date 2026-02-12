@@ -1,0 +1,15 @@
+{
+    "tasks": [
+        {
+            "id": "generate",
+            "name": "Build container and generate tasks",
+            "command": "python3 generate_tasks.py --count 5 --output .scripthut/apptainer_python/generated-tasks.json --partition standard",
+            "environment": "python-booth",
+            "partition": "standard",
+            "cpus": 1,
+            "memory": "2G",
+            "time_limit": "00:10:00",
+            "generates_source": ".scripthut/apptainer_python/generated-tasks.json"
+        }
+    ]
+}
