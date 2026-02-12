@@ -56,7 +56,7 @@ def main():
     n = len(fractions)
     mean_frac = sum(fractions) / n
     mean_disp = sum(max_disps) / n
-    se_frac = (sum((x - mean_frac) ** 2 for x in fractions) / (n * (n - 1))) ** 0.5
+    se_frac = (sum((x - mean_frac) ** 2 for x in fractions) / (n * (n - 1))) ** 0.5 if n > 1 else 0.0
 
     # Write summary
     with open("results.csv", "w", newline="") as f:
