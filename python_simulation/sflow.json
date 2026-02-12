@@ -3,13 +3,13 @@
         {
             "id": "generate",
             "name": "Generate pricing tasks",
-            "command": "python3 generate_tasks.py --count 5 --output .scripthut/python_simulation/generated-tasks.json --partition standard",
+            "command": "python3 generate_tasks.py --count 5 --output ../.scripthut/python_simulation/generated-tasks.json --partition standard",
             "environment": "python-booth",
             "partition": "standard",
             "cpus": 1,
             "memory": "1G",
             "time_limit": "00:05:00",
-            "generates_source": ".scripthut/python_simulation/generated-tasks.json"
+            "generates_source": "../.scripthut/python_simulation/generated-tasks.json"
         }
     ]
 }

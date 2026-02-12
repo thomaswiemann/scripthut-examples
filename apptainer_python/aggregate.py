@@ -27,6 +27,16 @@ def main():
     print(f"  Input directory: {input_dir}")
 
     files = sorted(glob.glob(os.path.join(input_dir, "res_*.csv")))
+
+    # Retry up to 30s in case of NFS propagation delay
+    import time
+    retries = 0
+    while not files and retries < 6:
+        retries += 1
+        print(f"  No files yet, retrying in 5s... (attempt {retries}/6)")
+        time.sleep(5)
+        files = sorted(glob.glob(os.path.join(input_dir, "res_*.csv")))
+
     print(f"  Found {len(files)} result files")
 
     if not files:
