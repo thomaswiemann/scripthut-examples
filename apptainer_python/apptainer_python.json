@@ -3,13 +3,14 @@
         {
             "id": "generate",
             "name": "Build container and generate tasks",
-            "command": "python3 generate_tasks.py --count 5 --output ../.scripthut/apptainer_python/generated-tasks.json --partition standard",
+            "command": "python3 generate_tasks.py --count 5 --output generated-tasks.json --partition standard",
+            "working_dir": "apptainer_python",
             "environment": "python",
             "partition": "standard",
             "cpus": 1,
             "memory": "2G",
             "time_limit": "00:10:00",
-            "generates_source": "../.scripthut/apptainer_python/generated-tasks.json"
+            "generates_source": "generated-tasks.json"
         }
     ]
 }
