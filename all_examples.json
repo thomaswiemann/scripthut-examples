@@ -2,7 +2,7 @@
     "tasks": [
         {
             "id": "r.generate",
-            "name": "R — Generate simulation tasks",
+            "name": "R - Generate simulation tasks",
             "command": "python3 r_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/r-tasks.json --partition standard --prefix r.",
             "environment": "python",
             "partition": "standard",
@@ -13,7 +13,7 @@
         },
         {
             "id": "python.generate",
-            "name": "Python — Generate pricing tasks",
+            "name": "Python - Generate pricing tasks",
             "command": "python3 python_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/python-tasks.json --partition standard --prefix py.",
             "environment": "python",
             "partition": "standard",
@@ -24,7 +24,7 @@
         },
         {
             "id": "julia.generate",
-            "name": "Julia — Generate bootstrap tasks",
+            "name": "Julia - Generate bootstrap tasks",
             "command": "python3 julia_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/julia-tasks.json --partition standard --prefix jl.",
             "environment": "python",
             "partition": "standard",
@@ -35,7 +35,7 @@
         },
         {
             "id": "apptainer.generate",
-            "name": "Apptainer — Build container and generate tasks",
+            "name": "Apptainer - Build container and generate tasks",
             "command": "python3 apptainer_python/generate_tasks.py --count 5 --output .scripthut/all_examples/apptainer-tasks.json --partition standard --prefix apt.",
             "environment": "python",
             "partition": "standard",
@@ -43,6 +43,37 @@
             "memory": "2G",
             "time_limit": "00:10:00",
             "generates_source": ".scripthut/all_examples/apptainer-tasks.json"
+        },
+        {
+            "id": "bash.setup",
+            "name": "Bash - Setup",
+            "command": "bash simple_task.sh 1",
+            "working_dir": "bash_simulation"
+        },
+        {
+            "id": "bash.build.x",
+            "name": "Bash - Build-X",
+            "command": "bash simple_task.sh 2",
+            "working_dir": "bash_simulation",
+            "cpus": 2,
+            "memory": "2G",
+            "deps": ["bash.setup"]
+        },
+        {
+            "id": "bash.build.y",
+            "name": "Bash - Build-Y",
+            "command": "bash simple_task.sh 3",
+            "working_dir": "bash_simulation",
+            "cpus": 2,
+            "memory": "2G",
+            "deps": ["bash.setup"]
+        },
+        {
+            "id": "bash.final",
+            "name": "Bash - Finalize",
+            "command": "bash simple_task.sh 4",
+            "working_dir": "bash_simulation",
+            "deps": ["bash.build.*"]
         }
     ]
 }

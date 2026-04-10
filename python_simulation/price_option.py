@@ -18,6 +18,7 @@ and prices a European call with payoff max(S_T - K, 0).
 
 import csv
 import os
+import platform
 import sys
 import time
 
@@ -80,7 +81,7 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
 
     print(f"Pricing simulation {seed} started")
-    print(f"  Hostname: {os.uname().nodename}")
+    print(f"  Hostname: {platform.node()}")
     print(f"  Time: {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
     result = price_european_call(seed)

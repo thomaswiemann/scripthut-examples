@@ -59,7 +59,7 @@ def main():
     )
     parser.add_argument(
         "--count", "-n", type=int, default=5,
-        help="Number of pricing tasks (default: 10)",
+        help="Number of pricing tasks (default: 5)",
     )
     parser.add_argument(
         "--working-dir", "-d", type=str,

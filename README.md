@@ -12,6 +12,7 @@ Each subdirectory contains a self-contained workflow JSON alongside its scripts.
 | [python_simulation](python_simulation/) | Python | Monte Carlo option pricing (Black-Scholes) |
 | [julia_simulation](julia_simulation/) | Julia | Bootstrap OLS regression |
 | [apptainer_python](apptainer_python/) | Python + Apptainer | Containerized random walk simulation |
+| [bash_simulation](bash_simulation/) | Bash | Static diamond DAG (no dynamic generation) |
 
 All examples use the same **fan-out/fan-in** pattern:
 1. A **generator task** runs on a compute node and produces a task JSON (`generates_source`)
@@ -29,35 +30,55 @@ All examples use the same **fan-out/fan-in** pattern:
 
 ## Usage
 
-1. Clone this repo to your cluster:
+### Option A: Git Source (easiest)
+
+Add this repo as a git source in your `scripthut.yaml` — ScriptHut clones it automatically:
+
+```yaml
+sources:
+  - name: scripthut-examples
+    type: git
+    url: https://github.com/thomaswiemann/scripthut-examples.git
+    branch: main
+    backend: hpc-cluster          # your backend name
+    workflows_glob: "**/*.json"
+```
+
+Then go to **Sources → Sync → Run**. No deploy key needed (public repo).
+
+### Option B: Local Clone
+
+Clone the repo on the backend yourself and point ScriptHut at it:
 
 ```bash
-git clone git@github.com:thomaswiemann/scripthut-examples.git ~/scripthut-examples
+git clone git@github.com:thomaswiemann/scripthut-examples.git ~/Projects/scripthut-examples
 ```
 
-2. Add a project to your `scripthut.yaml`:
-
 ```yaml
-projects:
+sources:
   - name: scripthut-examples
-    backend: mercury
+    type: path
     path: ~/Projects/scripthut-examples
-    description: "Example ScriptHut workflows"
+    backend: hpc-cluster
+    workflows_glob: "**/*.json"
 ```
 
-3. Make sure environments are configured (adapt to your cluster's `module avail`):
+### Environment Configuration
+
+Both options require environments on your backend (adapt to your cluster's `module avail`):
 
 ```yaml
-environments:
-  - name: python
-    extra_init: "module load python/3.12"   # adjust to your module name
-  - name: R
-    extra_init: "module load R/4.5"         # e.g., R/4.5/4.5.3
-  - name: julia
-    extra_init: "module load julia/1.12"
+backends:
+  - name: hpc-cluster
+    # ...
+    environments:
+      - name: python
+        extra_init: "module load python/3.12"
+      - name: R
+        extra_init: "module load R/4.5"
+      - name: julia
+        extra_init: "module load julia/1.12"
 ```
-
-4. Start ScriptHut — all workflow JSON files are discovered automatically!
 
 ## Task ID Prefixes
 
@@ -69,6 +90,7 @@ When running examples individually, task IDs are unprefixed (e.g., `sim.0`, `agg
 | Python simulation | `py.` | `py.pricing.0`, `py.aggregate` |
 | Julia simulation | `jl.` | `jl.bootstrap.0`, `jl.aggregate` |
 | Apptainer | `apt.` | `apt.sim.0`, `apt.aggregate` |
+| Bash | `bash.` | `bash.setup`, `bash.build.x`, `bash.final` |
 
 ## Project Structure
 

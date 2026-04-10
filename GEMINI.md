@@ -12,6 +12,7 @@ This repository contains example workflows for [ScriptHut](https://github.com/th
 | `python_simulation/` | Python | Monte Carlo option pricing (Black-Scholes) | `python` |
 | `julia_simulation/` | Julia | Bootstrap OLS regression | `julia` |
 | `apptainer_python/` | Python + Apptainer | Containerized random walk simulation | (system) |
+| `bash_simulation/` | Bash | Static diamond DAG | (none) |
 
 ## Conventions
 

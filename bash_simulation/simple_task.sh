@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Simple test task script for ScriptRun.
+# Simple test task script for ScriptHut.
 # This script simulates a job by sleeping and writing output.
 #
 # Usage: bash simple_task.sh <task_number>
@@ -10,7 +10,7 @@ TASK_NUM=${1:-1}
 SLEEP_TIME=$((10 + RANDOM % 20))  # Random sleep between 10-30 seconds
 
 echo "=========================================="
-echo "ScriptRun Test Task #${TASK_NUM}"
+echo "ScriptHut Test Task #${TASK_NUM}"
 echo "=========================================="
 echo ""
 echo "Started at: $(date)"
