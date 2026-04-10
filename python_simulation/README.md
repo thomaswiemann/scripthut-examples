@@ -18,15 +18,15 @@ Prices a European call option using Monte Carlo simulation of geometric Brownian
 workflows:
   - name: python-pricing
     backend: mercury
-    command: "cat ~/Projects/scripthut-examples/python_simulation/sflow.json"
+    command: "cat ~/Projects/scripthut-examples/python_simulation/python_simulation.json"
 ```
 
-2. Make sure the `python-booth` environment is configured:
+2. Make sure the `python` environment is configured:
 
 ```yaml
 environments:
-  - name: python-booth
-    extra_init: "module load python/booth/3.12"
+  - name: python
+    extra_init: "module load python/3.12"      # adjust to your cluster
 ```
 
 3. Launch the workflow from the ScriptHut UI.
@@ -35,7 +35,7 @@ environments:
 
 | File | Description |
 |------|-------------|
-| `sflow.json` | Entry point — launches the generator task |
+| `python_simulation.json` | Entry point — launches the generator task |
 | `generate_tasks.py` | Creates task JSON with fan-out/fan-in pattern |
 | `price_option.py` | Monte Carlo GBM simulation (numpy) |
 | `aggregate.py` | Combines estimates, computes mean and SE |
@@ -50,4 +50,4 @@ environments:
 - **`generates_source`** — dynamic task generation on compute nodes
 - **Wildcard dependencies** — `pricing.*` waits for all pricing tasks
 - **`.` grouping** — task IDs `pricing.0`..`pricing.9` appear as a collapsible group in the UI
-- **Named environments** — tasks reference `python-booth` for module loading
+- **Named environments** — tasks reference `python` for module loading

@@ -20,17 +20,17 @@ Uses only Julia stdlib — no package installation required.
 workflows:
   - name: julia-bootstrap
     backend: mercury
-    command: "cat ~/Projects/scripthut-examples/julia_simulation/sflow.json"
+    command: "cat ~/Projects/scripthut-examples/julia_simulation/julia_simulation.json"
 ```
 
 2. Make sure the environments are configured:
 
 ```yaml
 environments:
-  - name: python-booth
-    extra_init: "module load python/booth/3.12"
-  - name: julia-112
-    extra_init: "module load julia/1.12"
+  - name: python
+    extra_init: "module load python/3.12"      # adjust to your cluster
+  - name: julia
+    extra_init: "module load julia/1.12"        # adjust to your cluster
 ```
 
 3. Launch the workflow from the ScriptHut UI.
@@ -39,7 +39,7 @@ environments:
 
 | File | Description |
 |------|-------------|
-| `sflow.json` | Entry point — launches the generator task |
+| `julia_simulation.json` | Entry point — launches the generator task |
 | `generate_tasks.py` | Creates task JSON with fan-out/fan-in pattern |
 | `bootstrap.jl` | Bootstrap OLS on simulated data (stdlib only) |
 | `aggregate.jl` | Computes 95% CIs via percentile method |
@@ -54,4 +54,4 @@ environments:
 - **`generates_source`** — dynamic task generation on compute nodes
 - **Wildcard dependencies** — `bootstrap.*` waits for all bootstrap tasks
 - **`.` grouping** — task IDs `bootstrap.0`..`bootstrap.9` appear as a collapsible group
-- **Mixed environments** — generator uses `python-booth`, compute uses `julia-112`
+- **Mixed environments** — generator uses `python`, compute uses `julia`

@@ -2,7 +2,7 @@
 
 Example workflows for [ScriptHut](https://github.com/thomaswiemann/scripthut).
 
-Each subdirectory contains a self-contained workflow with a `sflow.json` entry point. A root-level `sflow.json` runs all examples together.
+Each subdirectory contains a self-contained workflow JSON alongside its scripts. A root-level `all_examples.json` runs all examples together.
 
 ## Examples
 
@@ -23,9 +23,9 @@ All examples use the same **fan-out/fan-in** pattern:
 - **Endogenous workflows** — `generates_source` lets a task produce the workflow dynamically
 - **Wildcard dependencies** — `sim.*`, `pricing.*`, `bootstrap.*` fan-in patterns
 - **Task grouping** — dot-separated IDs (`sim.0`, `sim.1`) for collapsible UI groups
-- **Environment configuration** — `r-451`, `python-booth`, `julia-112` for module loading
+- **Environment configuration** — `python`, `R`, `julia` mapped to `module load` in your config
 - **Containerized tasks** — Apptainer example runs simulations inside a Docker-pulled container
-- **Combined runs** — master `sflow.json` uses `--prefix` to namespace task IDs across examples
+- **Combined runs** — `all_examples.json` uses `--prefix` to namespace task IDs across examples
 
 ## Usage
 
@@ -45,23 +45,23 @@ projects:
     description: "Example ScriptHut workflows"
 ```
 
-3. Make sure environments are configured:
+3. Make sure environments are configured (adapt to your cluster's `module avail`):
 
 ```yaml
 environments:
-  - name: python-booth
-    extra_init: "module load python/booth/3.12"
-  - name: r-451
-    extra_init: "module load R/4.5/4.5.1"
-  - name: julia-112
+  - name: python
+    extra_init: "module load python/3.12"   # adjust to your module name
+  - name: R
+    extra_init: "module load R/4.5"         # e.g., R/4.5/4.5.3
+  - name: julia
     extra_init: "module load julia/1.12"
 ```
 
-4. Start ScriptHut — all `sflow.json` files are discovered automatically!
+4. Start ScriptHut — all workflow JSON files are discovered automatically!
 
 ## Task ID Prefixes
 
-When running examples individually, task IDs are unprefixed (e.g., `sim.0`, `aggregate`). When running all examples together via the master `sflow.json`, each generator receives a `--prefix` flag to avoid ID collisions:
+When running examples individually, task IDs are unprefixed (e.g., `sim.0`, `aggregate`). When running all examples together via `all_examples.json`, each generator receives a `--prefix` flag to avoid ID collisions:
 
 | Example | Prefix | Task IDs |
 |---|---|---|
@@ -76,26 +76,29 @@ ScriptHut is **git-aware** — workflows are discovered via `git ls-files` and a
 
 ```
 scripthut-examples/
-├── sflow.json              ← master: runs all examples
-├── .gitignore              ← ignores .scripthut/
-├── .scripthut/             ← runtime artifacts (not tracked)
+├── all_examples.json               ← runs all examples together
+├── .gitignore                      ← ignores .scripthut/
+├── .scripthut/                     ← runtime artifacts (not tracked)
 ├── r_simulation/
-│   ├── sflow.json          ← entry point (auto-discovered)
+│   ├── r_simulation.json           ← workflow (auto-discovered)
 │   ├── generate_tasks.py
 │   ├── gen_results.R
 │   └── agg_results.R
 ├── python_simulation/
-│   ├── sflow.json
+│   ├── python_simulation.json
 │   ├── generate_tasks.py
 │   ├── price_option.py
 │   └── aggregate.py
 ├── julia_simulation/
-│   ├── sflow.json
+│   ├── julia_simulation.json
 │   ├── generate_tasks.py
 │   ├── bootstrap.jl
 │   └── aggregate.jl
+├── bash_simulation/
+│   ├── bash_diamond.json
+│   └── simple_task.sh
 └── apptainer_python/
-    ├── sflow.json
+    ├── apptainer_python.json
     ├── generate_tasks.py
     ├── simulate.py
     └── aggregate.py

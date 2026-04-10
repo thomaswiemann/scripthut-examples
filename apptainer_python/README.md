@@ -21,15 +21,15 @@ container is a minimal, self-contained environment.
 workflows:
   - name: apptainer-sim
     backend: mercury
-    command: "cat ~/Projects/scripthut-examples/apptainer_python/sflow.json"
+    command: "cat ~/Projects/scripthut-examples/apptainer_python/apptainer_python.json"
 ```
 
-2. Make sure the `python-booth` environment is configured (for the generator and aggregator):
+2. Make sure the `python` environment is configured (for the generator and aggregator):
 
 ```yaml
 environments:
-  - name: python-booth
-    extra_init: "module load python/booth/3.12"
+  - name: python
+    extra_init: "module load python/3.12"      # adjust to your cluster
 ```
 
 3. Launch the workflow from the ScriptHut UI.
@@ -38,7 +38,7 @@ environments:
 
 | File | Description |
 |------|-------------|
-| `sflow.json` | Entry point — launches the generator task |
+| `apptainer_python.json` | Entry point — launches the generator task |
 | `generate_tasks.py` | Pulls container, creates task JSON |
 | `simulate.py` | Random walk simulation (stdlib only, runs in container) |
 | `aggregate.py` | Combines results (runs outside container) |

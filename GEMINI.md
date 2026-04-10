@@ -2,15 +2,15 @@
 
 ## Overview
 
-This repository contains example workflows for [ScriptHut](https://github.com/thomaswiemann/scripthut). Each subdirectory is a self-contained example with its own `sflow.json` entry point. A root-level `sflow.json` runs all examples together.
+This repository contains example workflows for [ScriptHut](https://github.com/thomaswiemann/scripthut). Each subdirectory is a self-contained example with a descriptively-named workflow JSON file colocated with its scripts. A root-level `all_examples.json` runs all examples together.
 
 ## Examples
 
 | Directory | Language | Theme | Environment |
 |-----------|----------|-------|-------------|
-| `r_simulation/` | R | Monte Carlo regression (OLS, Ridge, Lasso) | `r-451` |
-| `python_simulation/` | Python | Monte Carlo option pricing (Black-Scholes) | `python-booth` |
-| `julia_simulation/` | Julia | Bootstrap OLS regression | `julia-112` |
+| `r_simulation/` | R | Monte Carlo regression (OLS, Ridge, Lasso) | `R` |
+| `python_simulation/` | Python | Monte Carlo option pricing (Black-Scholes) | `python` |
+| `julia_simulation/` | Julia | Bootstrap OLS regression | `julia` |
 | `apptainer_python/` | Python + Apptainer | Containerized random walk simulation | (system) |
 
 ## Conventions
@@ -33,7 +33,7 @@ Discussion files should include:
 ### Example Structure
 
 Each example lives in its own directory and must contain:
-- `sflow.json` — ScriptHut entry point (auto-discovered)
+- `<example_name>.json` — ScriptHut workflow file (auto-discovered via `workflows_glob`)
 - `README.md` — standalone documentation with quick-start instructions
 - Source scripts referenced by the workflow
 
