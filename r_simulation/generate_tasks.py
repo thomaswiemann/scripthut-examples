@@ -27,37 +27,41 @@ import json
 import os
 
 
-def generate_tasks(count: int, working_dir: str, partition: str, prefix: str = "") -> dict:
+def generate_tasks(count: int, working_dir: str, prefix: str = "", partition: str = None) -> dict:
     """Generate simulation tasks with a fan-out/fan-in pattern."""
     tasks = []
 
     # Fan-out: N parallel simulation tasks
     for i in range(count):
-        tasks.append({
+        task = {
             "id": f"{prefix}sim.{i}",
             "name": f"Simulation {i}",
             "command": f"Rscript --vanilla gen_results.R {i} temp",
             "working_dir": working_dir,
-            "partition": partition,
             "environment": "R",
             "cpus": 1,
             "memory": "2G",
             "time_limit": "00:05:00",
-        })
+        }
+        if partition:
+            task["partition"] = partition
+        tasks.append(task)
 
     # Fan-in: aggregate all simulation results
-    tasks.append({
+    agg_task = {
         "id": f"{prefix}aggregate",
         "name": "Aggregate Results",
         "command": "Rscript --vanilla agg_results.R temp",
         "working_dir": working_dir,
-        "partition": partition,
         "environment": "R",
         "cpus": 1,
         "memory": "1G",
         "time_limit": "00:05:00",
         "deps": [f"{prefix}sim.*"],
-    })
+    }
+    if partition:
+        agg_task["partition"] = partition
+    tasks.append(agg_task)
 
     return {"tasks": tasks}
 
@@ -76,8 +80,8 @@ def main():
         help="Working directory on the cluster (default: script directory)",
     )
     parser.add_argument(
-        "--partition", "-p", type=str, default="standard",
-        help="Slurm partition to use (default: standard)",
+        "--partition", "-p", type=str, default=None,
+        help="Slurm partition (omit to use cluster default)",
     )
     parser.add_argument(
         "--output", "-o", type=str, default=None,
@@ -89,7 +93,7 @@ def main():
     )
 
     args = parser.parse_args()
-    tasks = generate_tasks(args.count, args.working_dir, args.partition, args.prefix)
+    tasks = generate_tasks(args.count, args.working_dir, args.prefix, args.partition)
 
     if args.output:
         os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)

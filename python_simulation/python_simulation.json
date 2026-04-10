@@ -3,10 +3,9 @@
         {
             "id": "generate",
             "name": "Generate pricing tasks",
-            "command": "python3 generate_tasks.py --count 5 --output generated-tasks.json --partition standard",
+            "command": "python3 generate_tasks.py --count 5 --output generated-tasks.json",
             "working_dir": "python_simulation",
             "environment": "python",
-            "partition": "standard",
             "cpus": 1,
             "memory": "1G",
             "time_limit": "00:05:00",

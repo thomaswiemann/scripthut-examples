@@ -47,13 +47,13 @@ def ensure_container(sif_path: str) -> None:
     print(f"Container ready ({os.path.getsize(sif_path) / 1e6:.1f} MB)")
 
 
-def generate_tasks(count: int, working_dir: str, partition: str, sif_path: str, prefix: str = "") -> dict:
+def generate_tasks(count: int, working_dir: str, sif_path: str, prefix: str = "", partition: str = None) -> dict:
     """Generate containerized simulation tasks."""
     tasks = []
 
     # Fan-out: N parallel simulations inside the container
     for i in range(count):
-        tasks.append({
+        task = {
             "id": f"{prefix}sim.{i}",
             "name": f"Simulation {i}",
             "command": (
@@ -61,25 +61,29 @@ def generate_tasks(count: int, working_dir: str, partition: str, sif_path: str, 
                 f"apptainer exec {sif_path} python3 simulate.py {i} temp"
             ),
             "working_dir": working_dir,
-            "partition": partition,
             "cpus": 1,
             "memory": "2G",
             "time_limit": "00:05:00",
-        })
+        }
+        if partition:
+            task["partition"] = partition
+        tasks.append(task)
 
     # Fan-in: aggregate results (no container needed — just reads CSVs)
-    tasks.append({
+    agg_task = {
         "id": f"{prefix}aggregate",
         "name": "Aggregate Results",
         "command": "python3 aggregate.py temp",
         "working_dir": working_dir,
-        "partition": partition,
         "environment": "python",
         "cpus": 1,
         "memory": "1G",
         "time_limit": "00:05:00",
         "deps": [f"{prefix}sim.*"],
-    })
+    }
+    if partition:
+        agg_task["partition"] = partition
+    tasks.append(agg_task)
 
     return {"tasks": tasks}
 
@@ -98,8 +102,8 @@ def main():
         help="Working directory on the cluster (default: script directory)",
     )
     parser.add_argument(
-        "--partition", "-p", type=str, default="standard",
-        help="Slurm partition to use (default: standard)",
+        "--partition", "-p", type=str, default=None,
+        help="Slurm partition (omit to use cluster default)",
     )
     parser.add_argument(
         "--output", "-o", type=str, default=None,
@@ -116,7 +120,7 @@ def main():
     sif_path = os.path.join(SIF_CACHE_DIR, SIF_NAME)
     ensure_container(sif_path)
 
-    tasks = generate_tasks(args.count, args.working_dir, args.partition, sif_path, args.prefix)
+    tasks = generate_tasks(args.count, args.working_dir, sif_path, args.prefix, args.partition)
 
     if args.output:
         os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)

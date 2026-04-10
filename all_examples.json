@@ -3,9 +3,8 @@
         {
             "id": "r.generate",
             "name": "R - Generate simulation tasks",
-            "command": "python3 r_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/r-tasks.json --partition standard --prefix r.",
+            "command": "python3 r_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/r-tasks.json --prefix r.",
             "environment": "python",
-            "partition": "standard",
             "cpus": 1,
             "memory": "1G",
             "time_limit": "00:05:00",
@@ -14,9 +13,8 @@
         {
             "id": "python.generate",
             "name": "Python - Generate pricing tasks",
-            "command": "python3 python_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/python-tasks.json --partition standard --prefix py.",
+            "command": "python3 python_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/python-tasks.json --prefix py.",
             "environment": "python",
-            "partition": "standard",
             "cpus": 1,
             "memory": "1G",
             "time_limit": "00:05:00",
@@ -25,9 +23,8 @@
         {
             "id": "julia.generate",
             "name": "Julia - Generate bootstrap tasks",
-            "command": "python3 julia_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/julia-tasks.json --partition standard --prefix jl.",
+            "command": "python3 julia_simulation/generate_tasks.py --count 5 --output .scripthut/all_examples/julia-tasks.json --prefix jl.",
             "environment": "python",
-            "partition": "standard",
             "cpus": 1,
             "memory": "1G",
             "time_limit": "00:05:00",
@@ -36,9 +33,8 @@
         {
             "id": "apptainer.generate",
             "name": "Apptainer - Build container and generate tasks",
-            "command": "python3 apptainer_python/generate_tasks.py --count 5 --output .scripthut/all_examples/apptainer-tasks.json --partition standard --prefix apt.",
+            "command": "python3 apptainer_python/generate_tasks.py --count 5 --output .scripthut/all_examples/apptainer-tasks.json --prefix apt.",
             "environment": "python",
-            "partition": "standard",
             "cpus": 1,
             "memory": "2G",
             "time_limit": "00:10:00",
