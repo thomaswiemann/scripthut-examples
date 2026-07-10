@@ -1,0 +1,21 @@
+{
+  "title": "Local LLM — vLLM (Qwen2.5-Coder-7B)",
+  "tasks": [
+    {
+      "id": "serve",
+      "name": "vLLM: Qwen2.5-Coder-7B-Instruct",
+      "command": "PORT=8000; echo \"OpenAI-compatible endpoint: http://$(hostname):${PORT}/v1  (model: Qwen/Qwen2.5-Coder-7B-Instruct)\" | tee -a \"$SCRIPTHUT_RUN_SUMMARY\"; vllm serve Qwen/Qwen2.5-Coder-7B-Instruct --host 0.0.0.0 --port \"${PORT}\"",
+      "partition": "gpu",
+      "gres": "gpu:1",
+      "cpus": 8,
+      "memory": "32G",
+      "time_limit": "08:00:00",
+      "env": [{ "include": ["vllm"] }]
+    }
+  ],
+  "env_groups": {
+    "vllm": [
+      { "init": "source \"$(conda info --base)/etc/profile.d/conda.sh\"; conda activate vllm 2>/dev/null || { conda create -y -n vllm python=3.11; conda activate vllm; pip install vllm; }" }
+    ]
+  }
+}

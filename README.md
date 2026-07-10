@@ -12,8 +12,10 @@ Each subdirectory contains a self-contained workflow with a `sflow.json` entry p
 | [python_simulation](python_simulation/) | Python | Monte Carlo option pricing (Black-Scholes) |
 | [julia_simulation](julia_simulation/) | Julia | Bootstrap OLS regression |
 | [apptainer_python](apptainer_python/) | Python + Apptainer | Containerized random walk simulation |
+| [local_models](local_models/) | vLLM | Serve a local OpenAI-compatible LLM on a GPU node |
 
-All examples use the same **fan-out/fan-in** pattern:
+The `local_models` example is a single long-running server task (no fan-out). The
+simulation examples use the same **fan-out/fan-in** pattern:
 1. A **generator task** runs on a compute node and produces a task JSON (`generates_source`)
 2. **N parallel tasks** run the simulation/compute (grouped via `.` separator)
 3. An **aggregation task** collects results (depends on all parallel tasks via `*` wildcard)
