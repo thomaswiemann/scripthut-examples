@@ -41,7 +41,7 @@ sources:
 
 ### 2. Env groups
 
-`r-451` and `python-booth` are defined in this repo’s `scripthut.yaml`. The generator uses `python-booth`; simulation and aggregate tasks use `r-451`.
+`r-453` and `python-booth` are defined in this repo’s `scripthut.yaml`. The generator uses `python-booth`; simulation and aggregate tasks use `r-453`.
 
 ### 3. Sync and run
 
@@ -76,7 +76,7 @@ python generate_tasks.py --count 10 --output /tmp/tasks.json
 - **`generates_source`** — dynamic task generation on compute nodes
 - **Wildcard dependencies** — `sim.*` waits for all simulation tasks
 - **`.` grouping** — task IDs `sim.0`..`sim.9` appear as a collapsible group in the UI
-- **Named env groups** — generator includes `python-booth`, simulations include `r-451`
+- **Named env groups** — generator includes `python-booth`, simulations include `r-453`
 
 ## Testing Locally (without Slurm)
 

@@ -9,7 +9,7 @@ This repository contains example workflows for [ScriptHut](https://github.com/tl
 | Directory | Language | Workflow file | Theme | Env group |
 |-----------|----------|---------------|-------|-----------|
 | `bash_simulation/` | Bash | `bash_diamond.json` | Static diamond DAG | (none) |
-| `r_simulation/` | R | `r_simulation.json` | Monte Carlo regression (OLS, Ridge, Lasso) | `r-451` (sims); `python-booth` (generator) |
+| `r_simulation/` | R | `r_simulation.json` | Monte Carlo regression (OLS, Ridge, Lasso) | `r-453` (sims); `python-booth` (generator) |
 | `python_simulation/` | Python | `python_simulation.json` | Monte Carlo option pricing (Black-Scholes) | `python-booth` |
 | `julia_simulation/` | Julia | `julia_simulation.json` | Bootstrap OLS regression | `julia-112` (compute); `python-booth` (generator) |
 | `apptainer_python/` | Python + Apptainer | `apptainer_python.json` | Containerized random walk simulation | `python-booth` (generator + aggregate) |

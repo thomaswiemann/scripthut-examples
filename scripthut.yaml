@@ -4,7 +4,7 @@
 env_groups:
   python-booth:
     - init: "module load python/booth/3.12"
-  r-451:
-    - init: "module load R/4.5/4.5.1"
+  r-453:
+    - init: "module load R/4.5/4.5.3"
   julia-112:
     - init: "module load julia/1.12"

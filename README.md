@@ -25,7 +25,7 @@ All compute examples (except the bash diamond) use the same **fan-out/fan-in** p
 - **Endogenous workflows** — `generates_source` lets a task produce the workflow dynamically
 - **Wildcard dependencies** — `sim.*`, `pricing.*`, `bootstrap.*` fan-in patterns
 - **Task grouping** — dot-separated IDs (`sim.0`, `sim.1`) for collapsible UI groups
-- **Environment configuration** — `env_groups` (`r-451`, `python-booth`, `julia-112`) for module loading
+- **Environment configuration** — `env_groups` (`r-453`, `python-booth`, `julia-112`) for module loading
 - **Containerized tasks** — Apptainer example runs simulations inside a Docker-pulled container
 - **Combined runs** — `all.json` uses `--prefix` to namespace task IDs across examples
 
