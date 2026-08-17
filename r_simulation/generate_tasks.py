@@ -12,14 +12,7 @@ head node. It writes the task JSON to a file that ScriptHut reads back.
 Usage:
     python generate_tasks.py [--count N] [--working-dir DIR] [--output FILE]
 
-Example sflow.json entry point:
-    {
-      "tasks": [{
-        "id": "generate",
-        "command": "python generate_tasks.py --count 5 --output ~/.cache/scripthut/sources/r-sim.json",
-        "generates_source": "~/.cache/scripthut/sources/r-sim.json"
-      }]
-    }
+Entry point: .hut/workflows/r_simulation.json (generates_source).
 """
 
 import argparse
@@ -39,7 +32,7 @@ def generate_tasks(count: int, working_dir: str, partition: str, prefix: str = "
             "command": f"Rscript --vanilla gen_results.R {i} temp",
             "working_dir": working_dir,
             "partition": partition,
-            "environment": "r-451",
+            "env": [{"include": ["r-451"]}],
             "cpus": 1,
             "memory": "2G",
             "time_limit": "00:05:00",
@@ -52,7 +45,7 @@ def generate_tasks(count: int, working_dir: str, partition: str, prefix: str = "
         "command": "Rscript --vanilla agg_results.R temp",
         "working_dir": working_dir,
         "partition": partition,
-        "environment": "r-451",
+        "env": [{"include": ["r-451"]}],
         "cpus": 1,
         "memory": "1G",
         "time_limit": "00:05:00",

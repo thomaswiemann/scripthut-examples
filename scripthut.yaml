@@ -1,0 +1,10 @@
+# Project-local ScriptHut config — env groups only.
+# Backends / sources / settings belong in the user-global file.
+
+env_groups:
+  python-booth:
+    - init: "module load python/booth/3.12"
+  r-451:
+    - init: "module load R/4.5/4.5.1"
+  julia-112:
+    - init: "module load julia/1.12"

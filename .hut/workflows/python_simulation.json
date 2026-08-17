@@ -1,10 +1,12 @@
 {
+    "title": "Python Monte Carlo option pricing",
     "tasks": [
         {
             "id": "generate",
             "name": "Generate pricing tasks",
             "command": "python3 generate_tasks.py --count 5 --output ../.scripthut/python_simulation/generated-tasks.json --partition standard",
-            "environment": "python-booth",
+            "working_dir": "python_simulation",
+            "env": [{"include": ["python-booth"]}],
             "partition": "standard",
             "cpus": 1,
             "memory": "1G",

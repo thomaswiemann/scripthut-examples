@@ -1,10 +1,12 @@
 {
+    "title": "Julia bootstrap OLS",
     "tasks": [
         {
             "id": "generate",
             "name": "Generate bootstrap tasks",
             "command": "python3 generate_tasks.py --count 5 --output ../.scripthut/julia_simulation/generated-tasks.json --partition standard",
-            "environment": "python-booth",
+            "working_dir": "julia_simulation",
+            "env": [{"include": ["python-booth"]}],
             "partition": "standard",
             "cpus": 1,
             "memory": "1G",

@@ -12,30 +12,30 @@ Prices a European call option using Monte Carlo simulation of geometric Brownian
 
 ## Quick Start
 
-1. Add this workflow to your `scripthut.yaml`:
+1. Register this repo as a git source in your **user-global** `~/.config/scripthut/scripthut.yaml` (once for all examples):
 
 ```yaml
-workflows:
-  - name: python-pricing
-    backend: mercury
-    command: "cat ~/Projects/scripthut-examples/python_simulation/sflow.json"
+sources:
+  - name: scripthut-examples
+    type: git
+    url: git@github.com:thomaswiemann/scripthut-examples.git
+    branch: main
 ```
 
-2. Make sure the `python-booth` environment is configured:
+2. The `python-booth` env group is defined in this repo’s `scripthut.yaml` (`module load python/booth/3.12`). ScriptHut overlays it when the source runs.
 
-```yaml
-environments:
-  - name: python-booth
-    extra_init: "module load python/booth/3.12"
+3. Sync and submit:
+
+```bash
+scripthut source sync scripthut-examples
+scripthut workflow run python_simulation.json --source scripthut-examples --backend mercury
 ```
-
-3. Launch the workflow from the ScriptHut UI.
 
 ## Files
 
 | File | Description |
 |------|-------------|
-| `sflow.json` | Entry point — launches the generator task |
+| `.hut/workflows/python_simulation.json` | Entry point — launches the generator task |
 | `generate_tasks.py` | Creates task JSON with fan-out/fan-in pattern |
 | `price_option.py` | Monte Carlo GBM simulation (numpy) |
 | `aggregate.py` | Combines estimates, computes mean and SE |
@@ -50,4 +50,4 @@ environments:
 - **`generates_source`** — dynamic task generation on compute nodes
 - **Wildcard dependencies** — `pricing.*` waits for all pricing tasks
 - **`.` grouping** — task IDs `pricing.0`..`pricing.9` appear as a collapsible group in the UI
-- **Named environments** — tasks reference `python-booth` for module loading
+- **Named env groups** — tasks `include` `python-booth` for module loading

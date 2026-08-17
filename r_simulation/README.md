@@ -4,10 +4,10 @@ A fan-out/fan-in simulation pipeline for testing ScriptHut on a Slurm cluster.
 
 **What it does:** Runs N parallel simulations (drawing from a bivariate normal), then aggregates the results once all simulations complete.
 
-**How it works:** Uses ScriptHut's **endogenous workflow** pattern — a static `sflow.json` defines a single generator task that runs on a compute node and produces the full task list. Nothing runs on the head node except `cat` and `sbatch`.
+**How it works:** Uses ScriptHut's **endogenous workflow** pattern — a static `.hut/workflows/r_simulation.json` defines a single generator task that runs on a compute node and produces the full task list. Nothing runs on the head node except scheduler commands and file reads.
 
 ```
-sflow.json
+.hut/workflows/r_simulation.json
   └── generate (runs on compute node, writes task JSON)
         ├── sim.0 ──┐
         ├── sim.1 ──┤
@@ -20,59 +20,48 @@ sflow.json
 
 | File | Purpose |
 |---|---|
-| `sflow.json` | Entry point — single generator task with `generates_source` |
+| `.hut/workflows/r_simulation.json` | Entry point — single generator task with `generates_source` |
 | `generate_tasks.py` | Runs on compute node — produces the simulation task JSON |
 | `gen_results.R` | Single simulation draw (runs N times in parallel) |
 | `agg_results.R` | Aggregates all results into `results.csv` |
 
 ## Quick Start
 
-### 1. Clone to your cluster
+### 1. Register the git source (once)
 
-```bash
-git clone git@github.com:thomaswiemann/scripthut-examples.git ~/Projects/scripthut-examples
-```
-
-### 2. Add project to `scripthut.yaml`
+In your user-global `~/.config/scripthut/scripthut.yaml`:
 
 ```yaml
-projects:
+sources:
   - name: scripthut-examples
-    backend: mercury
-    path: ~/Projects/scripthut-examples
+    type: git
+    url: git@github.com:thomaswiemann/scripthut-examples.git
+    branch: main
 ```
 
-### 3. Make sure the `r-451` environment is configured
+### 2. Env groups
 
-```yaml
-environments:
-  - name: r-451
-    extra_init: "module load R/4.5/4.5.1"
-  - name: python-booth
-    extra_init: "module load python/booth/3.12"
-```
+`r-451` and `python-booth` are defined in this repo’s `scripthut.yaml`. The generator uses `python-booth`; simulation and aggregate tasks use `r-451`.
 
-The generator task uses `python-booth`, and the simulation tasks use `r-451`.
-
-### 4. Start ScriptHut and run
+### 3. Sync and run
 
 ```bash
-scripthut
+scripthut source sync scripthut-examples
+scripthut workflow run r_simulation.json --source scripthut-examples --backend mercury
 ```
-
-Open http://localhost:8000. You'll see `r_simulation/sflow.json` discovered automatically — click **Run** to submit.
 
 ScriptHut will:
-1. Read `sflow.json` (via `cat` on head node)
-2. Submit the generator task via `sbatch`
-3. When it completes, read the generated JSON and append `sim.*` + `aggregate` tasks to the run
+
+1. Discover `.hut/workflows/r_simulation.json` from the git source
+2. Clone the repo on the backend and submit the generator via `sbatch`
+3. When it completes, read the generated JSON and append `sim.*` + `aggregate` tasks
 4. Submit simulations, then aggregate when all sims finish
 
-All logs go to `.scripthut/` inside the git repo.
+All logs go to `.scripthut/` inside the git clone.
 
 ## Customizing
 
-Edit `sflow.json` to change the `--count`, `--partition`, or `--working-dir` flags passed to `generate_tasks.py`.
+Edit `.hut/workflows/r_simulation.json` to change the `--count`, `--partition`, or `--working-dir` flags passed to `generate_tasks.py`.
 
 ```bash
 # Preview what the generator produces locally
@@ -87,7 +76,7 @@ python generate_tasks.py --count 10 --output /tmp/tasks.json
 - **`generates_source`** — dynamic task generation on compute nodes
 - **Wildcard dependencies** — `sim.*` waits for all simulation tasks
 - **`.` grouping** — task IDs `sim.0`..`sim.9` appear as a collapsible group in the UI
-- **Named environments** — generator uses `python-booth`, simulations use `r-451`
+- **Named env groups** — generator includes `python-booth`, simulations include `r-451`
 
 ## Testing Locally (without Slurm)
 

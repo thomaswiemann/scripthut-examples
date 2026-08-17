@@ -2,16 +2,19 @@
 
 ## Overview
 
-This repository contains example workflows for [ScriptHut](https://github.com/thomaswiemann/scripthut). Each subdirectory is a self-contained example with its own `sflow.json` entry point. A root-level `sflow.json` runs all examples together.
+This repository contains example workflows for [ScriptHut](https://github.com/tlamadon/scripthut) 0.12+. Each subdirectory holds the scripts for one example. Workflow entry points live in `.hut/workflows/<name>.json` (ScriptHut’s default discovery glob). `.hut/workflows/all.json` runs every generator together with prefixed task IDs.
 
 ## Examples
 
-| Directory | Language | Theme | Environment |
-|-----------|----------|-------|-------------|
-| `r_simulation/` | R | Monte Carlo regression (OLS, Ridge, Lasso) | `r-451` |
-| `python_simulation/` | Python | Monte Carlo option pricing (Black-Scholes) | `python-booth` |
-| `julia_simulation/` | Julia | Bootstrap OLS regression | `julia-112` |
-| `apptainer_python/` | Python + Apptainer | Containerized random walk simulation | (system) |
+| Directory | Language | Workflow file | Theme | Env group |
+|-----------|----------|---------------|-------|-----------|
+| `bash_simulation/` | Bash | `bash_diamond.json` | Static diamond DAG | (none) |
+| `r_simulation/` | R | `r_simulation.json` | Monte Carlo regression (OLS, Ridge, Lasso) | `r-451` (sims); `python-booth` (generator) |
+| `python_simulation/` | Python | `python_simulation.json` | Monte Carlo option pricing (Black-Scholes) | `python-booth` |
+| `julia_simulation/` | Julia | `julia_simulation.json` | Bootstrap OLS regression | `julia-112` (compute); `python-booth` (generator) |
+| `apptainer_python/` | Python + Apptainer | `apptainer_python.json` | Containerized random walk simulation | `python-booth` (generator + aggregate) |
+
+Env groups are defined in the repo-root `scripthut.yaml` and referenced from task JSON as `"env": [{"include": ["python-booth"]}]`. Do not use the legacy `"environment"` string field.
 
 ## Conventions
 
@@ -33,9 +36,11 @@ Discussion files should include:
 ### Example Structure
 
 Each example lives in its own directory and must contain:
-- `sflow.json` — ScriptHut entry point (auto-discovered)
+- A matching `.hut/workflows/<name>.json` entry point
 - `README.md` — standalone documentation with quick-start instructions
 - Source scripts referenced by the workflow
+
+The generate task in a per-example workflow must set `working_dir` to that example directory so commands like `python3 generate_tasks.py` resolve after a git-source clone.
 
 ### Task ID Conventions
 
@@ -51,3 +56,4 @@ Each example lives in its own directory and must contain:
 - All runtime artifacts go in `.scripthut/` (gitignored)
 - Use `generates_source` for dynamic task generation (endogenous workflows)
 - Keep resource usage modest: **1 CPU, 1G memory, ≤5 min** per task
+- Named runtimes are `env_groups` in `scripthut.yaml`, included from task `env:` — never `environment:` / `env_vars:`

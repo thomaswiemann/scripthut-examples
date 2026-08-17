@@ -1,19 +1,21 @@
 # ScriptHut Examples
 
-Example workflows for [ScriptHut](https://github.com/thomaswiemann/scripthut).
+Example workflows for [ScriptHut](https://github.com/tlamadon/scripthut) 0.12+.
 
-Each subdirectory contains a self-contained workflow with a `sflow.json` entry point. A root-level `sflow.json` runs all examples together.
+Each example is a self-contained directory of scripts. Workflow entry points live in `.hut/workflows/*.json` (ScriptHut’s default discovery glob). A combined workflow (`.hut/workflows/all.json`) runs every generator together with prefixed task IDs.
 
 ## Examples
 
-| Example | Language | Description |
-|---|---|---|
-| [r_simulation](r_simulation/) | R | Monte Carlo regression (OLS, Ridge, Lasso) |
-| [python_simulation](python_simulation/) | Python | Monte Carlo option pricing (Black-Scholes) |
-| [julia_simulation](julia_simulation/) | Julia | Bootstrap OLS regression |
-| [apptainer_python](apptainer_python/) | Python + Apptainer | Containerized random walk simulation |
+| Example | Language | Workflow file | Description |
+|---|---|---|---|
+| [bash_simulation](bash_simulation/) | Bash | `bash_diamond.json` | Static diamond DAG (no generator) |
+| [r_simulation](r_simulation/) | R | `r_simulation.json` | Monte Carlo regression (OLS, Ridge, Lasso) |
+| [python_simulation](python_simulation/) | Python | `python_simulation.json` | Monte Carlo option pricing (Black-Scholes) |
+| [julia_simulation](julia_simulation/) | Julia | `julia_simulation.json` | Bootstrap OLS regression |
+| [apptainer_python](apptainer_python/) | Python + Apptainer | `apptainer_python.json` | Containerized random walk simulation |
 
-All examples use the same **fan-out/fan-in** pattern:
+All compute examples (except the bash diamond) use the same **fan-out/fan-in** pattern:
+
 1. A **generator task** runs on a compute node and produces a task JSON (`generates_source`)
 2. **N parallel tasks** run the simulation/compute (grouped via `.` separator)
 3. An **aggregation task** collects results (depends on all parallel tasks via `*` wildcard)
@@ -23,45 +25,45 @@ All examples use the same **fan-out/fan-in** pattern:
 - **Endogenous workflows** — `generates_source` lets a task produce the workflow dynamically
 - **Wildcard dependencies** — `sim.*`, `pricing.*`, `bootstrap.*` fan-in patterns
 - **Task grouping** — dot-separated IDs (`sim.0`, `sim.1`) for collapsible UI groups
-- **Environment configuration** — `r-451`, `python-booth`, `julia-112` for module loading
+- **Environment configuration** — `env_groups` (`r-451`, `python-booth`, `julia-112`) for module loading
 - **Containerized tasks** — Apptainer example runs simulations inside a Docker-pulled container
-- **Combined runs** — master `sflow.json` uses `--prefix` to namespace task IDs across examples
+- **Combined runs** — `all.json` uses `--prefix` to namespace task IDs across examples
 
 ## Usage
 
-1. Clone this repo to your cluster:
+Module-load groups live in this repo’s [`scripthut.yaml`](scripthut.yaml). ScriptHut overlays them when the source is run — do not copy them into your user-global config.
+
+1. Add a **git source** to your user-global config (`~/.config/scripthut/scripthut.yaml`):
+
+```yaml
+sources:
+  - name: scripthut-examples
+    type: git
+    url: git@github.com:thomaswiemann/scripthut-examples.git
+    branch: main
+```
+
+The default `workflows_glob` (`.hut/workflows/*.json`) matches this repo. Pick the backend at run time (`--backend mercury`).
+
+2. Sync and list discovered workflows:
 
 ```bash
-git clone git@github.com:thomaswiemann/scripthut-examples.git ~/scripthut-examples
+scripthut source sync scripthut-examples
+scripthut source view scripthut-examples
 ```
 
-2. Add a project to your `scripthut.yaml`:
+3. Submit a workflow:
 
-```yaml
-projects:
-  - name: scripthut-examples
-    backend: mercury
-    path: ~/Projects/scripthut-examples
-    description: "Example ScriptHut workflows"
+```bash
+scripthut workflow run bash_diamond.json --source scripthut-examples --backend mercury
+scripthut workflow run python_simulation.json --source scripthut-examples --backend mercury
 ```
 
-3. Make sure environments are configured:
-
-```yaml
-environments:
-  - name: python-booth
-    extra_init: "module load python/booth/3.12"
-  - name: r-451
-    extra_init: "module load R/4.5/4.5.1"
-  - name: julia-112
-    extra_init: "module load julia/1.12"
-```
-
-4. Start ScriptHut — all `sflow.json` files are discovered automatically!
+Until these files are on `origin/main`, either push a branch and set `branch:` to it, or clone the repo on the cluster and use a `type: path` source.
 
 ## Task ID Prefixes
 
-When running examples individually, task IDs are unprefixed (e.g., `sim.0`, `aggregate`). When running all examples together via the master `sflow.json`, each generator receives a `--prefix` flag to avoid ID collisions:
+When running examples individually, task IDs are unprefixed (e.g., `sim.0`, `aggregate`). When running all examples together via `all.json`, each generator receives a `--prefix` flag to avoid ID collisions:
 
 | Example | Prefix | Task IDs |
 |---|---|---|
@@ -72,31 +74,22 @@ When running examples individually, task IDs are unprefixed (e.g., `sim.0`, `agg
 
 ## Project Structure
 
-ScriptHut is **git-aware** — workflows are discovered via `git ls-files` and all runtime artifacts stay inside `.scripthut/` at the repository root. This directory is gitignored.
+ScriptHut discovers `.hut/workflows/*.json` from the git source. Runtime artifacts stay inside `.scripthut/` at the repository root (gitignored).
 
 ```
 scripthut-examples/
-├── sflow.json              ← master: runs all examples
-├── .gitignore              ← ignores .scripthut/
+├── scripthut.yaml          ← project-local env_groups (no backends)
+├── .hut/workflows/         ← discovered entry points
+│   ├── all.json
+│   ├── bash_diamond.json
+│   ├── python_simulation.json
+│   ├── r_simulation.json
+│   ├── julia_simulation.json
+│   └── apptainer_python.json
 ├── .scripthut/             ← runtime artifacts (not tracked)
+├── bash_simulation/
 ├── r_simulation/
-│   ├── sflow.json          ← entry point (auto-discovered)
-│   ├── generate_tasks.py
-│   ├── gen_results.R
-│   └── agg_results.R
 ├── python_simulation/
-│   ├── sflow.json
-│   ├── generate_tasks.py
-│   ├── price_option.py
-│   └── aggregate.py
 ├── julia_simulation/
-│   ├── sflow.json
-│   ├── generate_tasks.py
-│   ├── bootstrap.jl
-│   └── aggregate.jl
 └── apptainer_python/
-    ├── sflow.json
-    ├── generate_tasks.py
-    ├── simulate.py
-    └── aggregate.py
 ```
