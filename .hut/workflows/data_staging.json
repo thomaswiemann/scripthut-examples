@@ -1,0 +1,18 @@
+{
+    "title": "Stage a local dataset onto the cluster",
+    "data": ["example-panel"],
+    "tasks": [
+        {
+            "id": "generate",
+            "name": "Generate chunk tasks",
+            "command": "python3 generate_tasks.py --count 4 --output ../.scripthut/data_staging/generated-tasks.json --partition standard",
+            "working_dir": "data_staging",
+            "env": [{"include": ["python-booth"]}],
+            "partition": "standard",
+            "cpus": 1,
+            "memory": "1G",
+            "time_limit": "00:05:00",
+            "generates_source": "../.scripthut/data_staging/generated-tasks.json"
+        }
+    ]
+}

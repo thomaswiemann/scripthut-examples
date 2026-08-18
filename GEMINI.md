@@ -13,6 +13,7 @@ This repository contains example workflows for [ScriptHut](https://github.com/tl
 | `python_simulation/` | Python | `python_simulation.json` | Monte Carlo option pricing (Black-Scholes) | `python-booth` |
 | `julia_simulation/` | Julia | `julia_simulation.json` | Bootstrap OLS regression | `julia-112` (compute); `python-booth` (generator) |
 | `apptainer_python/` | Python + Apptainer | `apptainer_python.json` | Containerized random walk simulation | `python-booth` (generator + aggregate) |
+| `data_staging/` | Python | `data_staging.json` | Stage a local dataset to scratch, then pool OLS statistics | `python-booth` |
 
 Env groups are defined in the repo-root `scripthut.yaml` and referenced from task JSON as `"env": [{"include": ["python-booth"]}]`. Do not use the legacy `"environment"` string field.
 
@@ -57,3 +58,20 @@ The generate task in a per-example workflow must set `working_dir` to that examp
 - Use `generates_source` for dynamic task generation (endogenous workflows)
 - Keep resource usage modest: **1 CPU, 1G memory, ≤5 min** per task
 - Named runtimes are `env_groups` in `scripthut.yaml`, included from task `env:` — never `environment:` / `env_vars:`
+
+### Data staging
+
+`data_staging/` is the one example that consumes data instead of generating it.
+Points worth preserving if it is edited:
+
+- It is **excluded from `all.json`** on purpose. `data:` is a top-level workflow
+  key, so folding it in would make every example unrunnable for anyone who has
+  not configured the dataset.
+- The dataset is declared **user-global** (`datasets:` is rejected in a
+  project `scripthut.yaml`), so the README must keep telling users to edit
+  `path` for their own clone.
+- Tasks read `$DATA_DIR`, or `$DATA_<NAME>` with more than one dataset. These
+  are deliberately not `SCRIPTHUT_`-prefixed: that namespace cannot be set by
+  env rules and is stripped from cache keys.
+- `sample_data/` stays small. It is committed only so the example runs straight
+  after a clone.
