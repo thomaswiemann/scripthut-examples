@@ -13,7 +13,7 @@ Each example is a self-contained directory of scripts. Workflow entry points liv
 | [python_simulation](python_simulation/) | Python | `python_simulation.json` | Monte Carlo option pricing (Black-Scholes) |
 | [julia_simulation](julia_simulation/) | Julia | `julia_simulation.json` | Bootstrap OLS regression |
 | [apptainer_python](apptainer_python/) | Python + Apptainer | `apptainer_python.json` | Containerized random walk simulation |
-| [data_staging](data_staging/) | Python | `data_staging.json` | Stage a local dataset to scratch, then fan out over it |
+| [data_staging](data_staging/) | Python | `data_staging.json` | Stage a local dataset onto the backend, then fan out over it |
 
 `data_staging` additionally needs a one-time `datasets:` entry in your user-global config, because it starts from a directory on your machine rather than generating its data on the cluster. See its [README](data_staging/README.md).
 
@@ -31,7 +31,7 @@ All compute examples (except the bash diamond) use the same **fan-out/fan-in** p
 - **Environment configuration** — `env_groups` (`r-453`, `python-booth`, `julia-112`) for module loading
 - **Containerized tasks** — Apptainer example runs simulations inside a Docker-pulled container
 - **Combined runs** — `all.json` uses `--prefix` to namespace task IDs across examples
-- **Data staging** — `data:` copies a local directory to scratch on first use, keyed by a content hash so later runs reuse it
+- **Data staging** — `data:` copies a local directory onto the backend on first use (under its `dataset_dir`, `~/scripthut-data` by default), keyed by a content hash so later runs reuse it
 
 ## Usage
 

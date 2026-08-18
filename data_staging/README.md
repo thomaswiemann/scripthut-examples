@@ -19,8 +19,8 @@ The compute is trivial on purpose. This example is about moving data.
 ## How staging works
 
 ScriptHut hashes the *local* file list — relative paths and sizes, not file
-contents — and copies the directory to `<scratch>/example-panel/<hash12>` on the
-backend. Because the destination is derived from the hash:
+contents — and copies the directory to `<dataset_dir>/example-panel/<hash12>` on
+the backend. Because the destination is derived from the hash:
 
 - The first run transfers the data and shows a `_data.example-panel` item.
 - Every later run finds the directory already there and skips the transfer
@@ -47,17 +47,24 @@ datasets:
     path: ~/Documents/GitHub/scripthut-examples/data_staging/sample_data
 ```
 
-You may also need a scratch root. ScriptHut looks for the dataset's own `root`,
-then a literal `SCRATCH` env rule on the backend, then the login shell's
-`$SCRATCH`, and fails naming all three rather than guessing a path. If your
-cluster does not export `$SCRATCH`, set one explicitly:
+That is enough to run: without further configuration the data lands in
+`~/scripthut-data` on the backend, the same way `clone_dir` defaults to
+`~/scripthut-repos`.
+
+Where data goes is a per-cluster fact, so for anything larger than this toy CSV
+point the backend at scratch, beside `clone_dir`:
 
 ```yaml
-datasets:
-  - name: example-panel
-    path: ~/Documents/GitHub/scripthut-examples/data_staging/sample_data
-    root: /scratch/your-username/data   # literal path, no $VARS
+backends:
+  - name: mercury
+    clone_dir: ~/scripthut-repos
+    dataset_dir: /scratch/your-username    # literal path; $USER is not expanded
 ```
+
+Home directories on HPC systems usually carry quotas far below real dataset
+sizes, and filling one tends to break everything else you are running — so set
+`dataset_dir` deliberately before staging anything substantial. A single dataset
+can override the backend with its own `root:` if it needs to live elsewhere.
 
 ## Run
 
