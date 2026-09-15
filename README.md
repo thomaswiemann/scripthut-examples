@@ -14,10 +14,13 @@ Each example is a self-contained directory of scripts. Workflow entry points liv
 | [julia_simulation](julia_simulation/) | Julia | `julia_simulation.json` | Bootstrap OLS regression |
 | [apptainer_python](apptainer_python/) | Python + Apptainer | `apptainer_python.json` | Containerized random walk simulation |
 | [data_staging](data_staging/) | Python | `data_staging.json` | Stage a local dataset onto the backend, then fan out over it |
+| [local_models](local_models/) | vLLM | `vllm_qwen.json` | Serve a local OpenAI-compatible LLM on a GPU node |
 
 `data_staging` additionally needs a one-time `datasets:` entry in your user-global config, because it starts from a directory on your machine rather than generating its data on the cluster. See its [README](data_staging/README.md).
 
-All compute examples (except the bash diamond) use the same **fan-out/fan-in** pattern:
+`local_models` is a single long-running GPU server (no fan-out) and is **excluded from `all.json`**. See its [README](local_models/README.md).
+
+All other compute examples (except the bash diamond) use the same **fan-out/fan-in** pattern:
 
 1. A **generator task** runs on a compute node and produces a task JSON (`generates_source`)
 2. **N parallel tasks** run the simulation/compute (grouped via `.` separator)
@@ -32,6 +35,7 @@ All compute examples (except the bash diamond) use the same **fan-out/fan-in** p
 - **Containerized tasks** — `apptainer_python` sets `image:` on sim tasks; pull once with `scripthut image ensure python:3.12-slim`
 - **Combined runs** — `all.json` uses `--prefix` to namespace task IDs across examples
 - **Data staging** — `data:` copies a local directory onto the backend on first use (under its `dataset_dir`, `~/scripthut-data` by default), keyed by a content hash so later runs reuse it
+- **Long-running GPU serve** — `local_models` / `vllm_qwen.json` keeps a vLLM OpenAI-compatible server up for the job's `time_limit`
 
 ## Usage
 
@@ -90,12 +94,14 @@ scripthut-examples/
 │   ├── r_simulation.json
 │   ├── julia_simulation.json
 │   ├── apptainer_python.json
-│   └── data_staging.json
+│   ├── data_staging.json
+│   └── vllm_qwen.json
 ├── .scripthut/             ← runtime artifacts (not tracked)
 ├── bash_simulation/
 ├── r_simulation/
 ├── python_simulation/
 ├── julia_simulation/
 ├── apptainer_python/
-└── data_staging/           ← includes sample_data/ (committed, 1.4 KB)
+├── data_staging/           ← includes sample_data/ (committed, 1.4 KB)
+└── local_models/           ← vLLM serve example (README only; workflow in .hut/)
 ```
