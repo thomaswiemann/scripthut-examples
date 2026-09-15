@@ -36,7 +36,7 @@
         },
         {
             "id": "apptainer.generate",
-            "name": "Apptainer — Build container and generate tasks",
+            "name": "Apptainer — Generate containerized tasks",
             "command": "python3 apptainer_python/generate_tasks.py --count 5 --output .scripthut/all_examples/apptainer-tasks.json --partition standard --prefix apt.",
             "env": [{"include": ["python-booth"]}],
             "partition": "standard",

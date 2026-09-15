@@ -3,7 +3,7 @@
     "tasks": [
         {
             "id": "generate",
-            "name": "Build container and generate tasks",
+            "name": "Generate containerized tasks",
             "command": "python3 generate_tasks.py --count 5 --output ../.scripthut/apptainer_python/generated-tasks.json --partition standard",
             "working_dir": "apptainer_python",
             "env": [{"include": ["python-booth"]}],
