@@ -14,6 +14,7 @@ This repository contains example workflows for [ScriptHut](https://github.com/th
 | `julia_simulation/` | Julia | `julia_simulation.json` | Bootstrap OLS regression | `julia-112` (compute); `python-booth` (generator) |
 | `apptainer_python/` | Python + Apptainer | `apptainer_python.json` | Containerized random walk via task `image:` (`python:3.12-slim`) | `python-booth` (generator + aggregate) |
 | `data_staging/` | Python | `data_staging.json` | Stage a local dataset onto the backend, then pool OLS statistics | `python-booth` |
+| `local_models/` | vLLM | `vllm_qwen.json` | Long-running OpenAI-compatible LLM serve on a GPU node | `vllm` |
 
 Env groups are defined in the repo-root `scripthut.yaml` and referenced from task JSON as `"env": [{"include": ["python-booth"]}]`. Do not use the legacy `"environment"` string field.
 
@@ -79,3 +80,16 @@ Points worth preserving if it is edited:
   cannot be set by env rules and is stripped from cache keys.
 - `sample_data/` stays small. It is committed only so the example runs straight
   after a clone.
+
+### Local models (vLLM)
+
+`local_models/` is a long-running GPU server, not a fan-out simulation.
+
+- **Excluded from `all.json`** — folding it in would pin a GPU for every
+  combined run.
+- Workflow entry point is `.hut/workflows/vllm_qwen.json`; the directory holds
+  the README only.
+- The `vllm` env group lives in repo-root `scripthut.yaml` (conda bootstrap by
+  default — replace with a site module or `image:` when available).
+- `--host 0.0.0.0` on the serve command is for peer jobs on the cluster, not
+  the ScriptHut control plane.

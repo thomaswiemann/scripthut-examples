@@ -8,3 +8,13 @@ env_groups:
     - init: "module load R/4.5/4.5.3"
   julia-112:
     - init: "module load julia/1.12"
+  # Idempotent conda bootstrap for the local_models / vllm_qwen example.
+  # Replace with a site module or container image: when you have one.
+  vllm:
+    - init: >
+        source "$(conda info --base)/etc/profile.d/conda.sh";
+        conda activate vllm 2>/dev/null || {
+          conda create -y -n vllm python=3.11;
+          conda activate vllm;
+          pip install vllm;
+        }
