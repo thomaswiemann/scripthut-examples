@@ -29,7 +29,7 @@ All compute examples (except the bash diamond) use the same **fan-out/fan-in** p
 - **Wildcard dependencies** — `sim.*`, `pricing.*`, `bootstrap.*` fan-in patterns
 - **Task grouping** — dot-separated IDs (`sim.0`, `sim.1`) for collapsible UI groups
 - **Environment configuration** — `env_groups` (`r-453`, `python-booth`, `julia-112`) for module loading
-- **Containerized tasks** — Apptainer example runs simulations inside a Docker-pulled container
+- **Containerized tasks** — `apptainer_python` sets `image:` on sim tasks; pull once with `scripthut image ensure python:3.12-slim`
 - **Combined runs** — `all.json` uses `--prefix` to namespace task IDs across examples
 - **Data staging** — `data:` copies a local directory onto the backend on first use (under its `dataset_dir`, `~/scripthut-data` by default), keyed by a content hash so later runs reuse it
 

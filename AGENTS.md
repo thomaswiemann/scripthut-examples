@@ -12,7 +12,7 @@ This repository contains example workflows for [ScriptHut](https://github.com/th
 | `r_simulation/` | R | `r_simulation.json` | Monte Carlo regression (OLS, Ridge, Lasso) | `r-453` (sims); `python-booth` (generator) |
 | `python_simulation/` | Python | `python_simulation.json` | Monte Carlo option pricing (Black-Scholes) | `python-booth` |
 | `julia_simulation/` | Julia | `julia_simulation.json` | Bootstrap OLS regression | `julia-112` (compute); `python-booth` (generator) |
-| `apptainer_python/` | Python + Apptainer | `apptainer_python.json` | Containerized random walk simulation | `python-booth` (generator + aggregate) |
+| `apptainer_python/` | Python + Apptainer | `apptainer_python.json` | Containerized random walk via task `image:` (`python:3.12-slim`) | `python-booth` (generator + aggregate) |
 | `data_staging/` | Python | `data_staging.json` | Stage a local dataset onto the backend, then pool OLS statistics | `python-booth` |
 
 Env groups are defined in the repo-root `scripthut.yaml` and referenced from task JSON as `"env": [{"include": ["python-booth"]}]`. Do not use the legacy `"environment"` string field.
