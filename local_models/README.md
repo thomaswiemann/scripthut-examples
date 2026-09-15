@@ -16,7 +16,8 @@ scripthut workflow run vllm_qwen.json \
 ```
 
 Adjust `partition` / `gres` in the workflow for your cluster before the first
-run.
+run. On Booth mercury the defaults are `gpu_h100` + `gpu:h100:1` (see
+`sinfo`); other sites will differ.
 
 ## How it works
 
@@ -48,11 +49,13 @@ Point any OpenAI-compatible client at it
 
 ## Adapt to your cluster
 
-- **`partition` / `gres`** — set to your GPU partition and GPU count
-  (`"gpu:2"`, `"gpu:a100:1"`, …).
-- **`vllm` env group** — replace the conda bootstrap in `scripthut.yaml` with
-  your site's way of getting vLLM (module load, prebuilt env, Apptainer
-  `image:`, …).
+- **`partition` / `gres`** — defaults target Booth mercury (`gpu_h100`,
+  `gpu:h100:1`). Change to your GPU partition and count (`"gpu:2"`,
+  `"gpu:a100:1"`, …). Check with `sinfo` — a wrong combo fails at submit with
+  "Requested node configuration is not available".
+- **`vllm` env group** — the conda bootstrap in `scripthut.yaml` needs `conda`
+  on the node. Mercury login/compute images may not have it; replace with a
+  site module or an Apptainer/`image:` stack that already contains vLLM.
 - **model** — change `Qwen/Qwen2.5-Coder-7B-Instruct` in the workflow; add
   flags like `--tensor-parallel-size N`, `--max-model-len`,
   `--gpu-memory-utilization`.
